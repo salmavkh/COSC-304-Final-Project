@@ -76,6 +76,7 @@ router.get("/", function (req, res, next) {
             `);
 
       // Loop through query results and generate table rows
+
       result.recordset.forEach((row) => {
         res.write(`
                     <tr>
@@ -98,9 +99,65 @@ custresult.recordset.forEach((row)=>{res.write(`<tr>
     <td>${row.firstName} ${row.lastName}</td>
     </tr>`);
 });
+
+
 res.write(`
 
                 </table>
+                `);
+res.write(`<h2>Add product</h3>
+           <form method="POST" action="/addproduct">
+           <table>
+           <tr><td>Product Name</td><td><input type="text" name="productName" size="20" required></td></tr>
+           <tr><td>Category ID </td><td><input type="number" name="categoryId" size="20" required></td></tr>
+           <tr><td>Product Desc</td><td><input type="text" name="productDesc" size="20" required></td></tr>
+           <tr><td>Product Price</td><td><input type="text" name="productPrice" size="20" required></td></tr>
+           </table>
+           <button type="submit">Add Product</button>
+           </form>
+
+    `);
+    if(parseInt(req.query.success)===1){
+        res.write(`<p>Item successfully added!</p>`);
+    }
+
+//////// Delete Product
+res.write(`<h2>Delete product</h3>
+    <form method="POST" action="/deleteproduct">
+    <table>
+    <tr><td>Product ID:</td><td><input type="text" name="productId" size="20" required></td></tr>
+    </table>
+    <button type="submit">Delete Product</button>
+    </form>
+
+`);
+if(parseInt(req.query.success)===2){
+ res.write(`<p>Item successfully deleted!</p>`);
+}
+
+////////
+
+/////// Update Product
+res.write(`<h2>Update Product</h3>
+    <form method="POST" action="/updateproduct">
+    <table>
+    <tr><td>Product ID </td><td><input type="number" name="productId" size="20" required></td></tr>
+    <tr><td>Product Name</td><td><input type="text" name="productName" size="20" required></td></tr>
+    <tr><td>Product Desc</td><td><input type="text" name="productDesc" size="20" required></td></tr>
+    <tr><td>Product Price</td><td><input type="text" name="productPrice" size="20" required></td></tr>
+    </table>
+    <button type="submit">Update Product </button>
+    </form>
+
+`);
+if(parseInt(req.query.success)===3){
+ res.write(`<p>Item successfully updated!</p>`);
+}
+///////
+
+
+
+res.write(`
                 </body>
                 </html>
             `);

@@ -23,8 +23,9 @@ let signuppage=require('./routes/signuppage');
 let signup=require('./routes/signup');
 let updateProfile=require('./routes/updateProfile');
 let addreview = require("./routes/addreview");
-
-
+let addproduct = require("./routes/addproduct");
+let deleteProduct = require("./routes/deleteProduct");
+let updateproduct = require("./routes/updateproduct");
 
 
 const app = express();
@@ -98,6 +99,9 @@ app.use('/signuppage', signuppage);
 app.use('/signup', signup);
 app.use('/updateProfile', updateProfile);
 app.use("/addreview", addreview);
+app.use("/addproduct", addproduct);
+app.use("/deleteProduct", deleteProduct);
+app.use("/updateproduct", updateproduct);
 
 // Starting our Express app
 app.listen(3000);
