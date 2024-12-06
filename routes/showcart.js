@@ -5,6 +5,10 @@ router.get("/", function (req, res, next) {
   let productList = false;
   res.setHeader("Content-Type", "text/html");
   res.write(`
+        <script>function update(newid, newqty)
+{
+	window.location="showcart?update="+newid+"&newqty="+newqty;
+}</script>
     <html>
     <head>
       <title>Your Shopping Cart</title>
@@ -97,11 +101,27 @@ router.get("/", function (req, res, next) {
 
   if (req.session.productList) {
     productList = req.session.productList;
+    if(req.query.update){
+      const updateId=req.query.update;
+      const newqty=req.query.newqty;
+      productList[updateId].quantity=newqty;
+    }
+    else if(req.query.delete){
+      // Find the index of the product to delete
+      const deleteId = req.query.delete;
+      
+      // Remove the product if found
+        productList.splice(deleteId,1);
+        req.session.productList = productList;
+      // Update the session with the modified productList
+    }
     res.write(`
+      <form name="form1">
       <table class="cart-table">
     `);
 
     let total = 0;
+    let qtyid = 0;
     for (let i = 0; i < productList.length; i++) {
       const product = productList[i];
       if (!product) {
@@ -111,7 +131,9 @@ router.get("/", function (req, res, next) {
       res.write(`
         <tr>
           <td>${product.name} (ID: ${product.id})</td>
-          <td>Quantity: ${product.quantity}</td>
+          <td align="center">Quantity:<input type="text" name="newqty${qtyid}" size="5" value=${product.quantity}></td>
+          <td><a href="showcart?delete=${product.id}">Remove Item from Cart</a></td>
+          <td><input type="button" onclick="update(${product.id}, document.form1.newqty${qtyid}.value)" value="Update Quantity"></td>
           <td>$${(Number(product.quantity) * Number(product.price)).toFixed(
             2
           )}</td>
