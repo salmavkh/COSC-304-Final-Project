@@ -22,6 +22,7 @@ let ship = require("./routes/ship");
 let signuppage=require('./routes/signuppage');
 let signup=require('./routes/signup');
 let updateProfile=require('./routes/updateProfile');
+let addreview = require("./routes/addreview");
 const app = express();
 
 // Enable parsing of requests for POST requests
@@ -92,5 +93,7 @@ app.use("/ship", ship);
 app.use('/signuppage', signuppage);
 app.use('/signup', signup);
 app.use('/updateProfile', updateProfile);
+app.use("/addreview", addreview);
+
 // Starting our Express app
 app.listen(3000);
