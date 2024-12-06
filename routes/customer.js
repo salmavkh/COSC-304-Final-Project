@@ -396,7 +396,7 @@ router.get("/", function (req, res, next) {
                         
                     </div>
                     <button type="submit" class="save-button">Save Changes</button>
-
+</form>
                 </div>
             </body>
             </html>
