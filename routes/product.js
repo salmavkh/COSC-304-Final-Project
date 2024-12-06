@@ -13,45 +13,8 @@ router.get("/", function (req, res, next) {
       if (!productId) {
         res.write(`
           <html>
-          <head>
-            <title>Product Details</title>
-            <style>
-              body {
-                font-family: Arial, sans-serif;
-                background-color: white;
-                color: black;
-                margin: 0;
-                padding: 20px;
-              }
-              .container {
-                max-width: 900px;
-                margin: 0 auto;
-                padding: 20px;
-                text-align: left;
-              }
-              h1 {
-                font-size: 2rem;
-                margin-bottom: 1rem;
-              }
-              p {
-                font-size: 1rem;
-                margin: 10px 0;
-              }
-              a {
-                text-decoration: none;
-                color: black;
-                margin-right: 15px;
-                font-size: 1rem;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <h1>Error</h1>
-              <p>Product ID is required!</p>
-              <a href="/listprod">Back to Products</a>
-            </div>
-          </body>
+          <head><title>Error</title></head>
+          <body><h1>Product ID is required!</h1></body>
           </html>
         `);
         res.end();
@@ -59,64 +22,41 @@ router.get("/", function (req, res, next) {
       }
 
       // Query to retrieve product details
-      const query = `SELECT * FROM product WHERE productId = @productId`;
-      const result = await pool
+      const productQuery = `SELECT * FROM product WHERE productId = @productId`;
+      const productResult = await pool
         .request()
         .input("productId", sql.Int, productId)
-        .query(query);
+        .query(productQuery);
 
-      if (result.recordset.length === 0) {
+      if (productResult.recordset.length === 0) {
         res.write(`
           <html>
-          <head>
-            <title>Product Details</title>
-            <style>
-              body {
-                font-family: Arial, sans-serif;
-                background-color: white;
-                color: black;
-                margin: 0;
-                padding: 20px;
-              }
-              .container {
-                max-width: 900px;
-                margin: 0 auto;
-                padding: 20px;
-                text-align: left;
-              }
-              h1 {
-                font-size: 2rem;
-                margin-bottom: 1rem;
-              }
-              p {
-                font-size: 1rem;
-                margin: 10px 0;
-              }
-              a {
-                text-decoration: none;
-                color: black;
-                margin-right: 15px;
-                font-size: 1rem;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <h1>Error</h1>
-              <p>No product found with the given ID.</p>
-              <a href="/listprod">Back to Products</a>
-            </div>
-          </body>
+          <head><title>Error</title></head>
+          <body><h1>No product found with the given ID.</h1></body>
           </html>
         `);
         res.end();
         return;
       }
 
-      const product = result.recordset[0];
+      const product = productResult.recordset[0];
       const productImageURL = `/img/${product.productId}.jpg`;
 
-      // Display product details
+      // Query to retrieve reviews for the product
+      const reviewQuery = `
+        SELECT r.reviewRating, r.reviewDate, r.reviewComment, c.firstName
+        FROM review r
+        JOIN customer c ON r.customerId = c.customerId
+        WHERE r.productId = @productId
+        ORDER BY r.reviewDate DESC`;
+      const reviewResult = await pool
+        .request()
+        .input("productId", sql.Int, productId)
+        .query(reviewQuery);
+
+      const reviews = reviewResult.recordset;
+
+      // Display product details with reviews
       res.write(`
         <html>
         <head>
@@ -153,11 +93,25 @@ router.get("/", function (req, res, next) {
               color: #555;
               margin-bottom: 20px;
             }
+            .review-section {
+              margin-top: 40px;
+              margin-bottom: 40px;
+            }
+            .review {
+              border: 1px solid #ddd;
+              border-radius: 8px;
+              padding: 10px;
+              margin-bottom: 10px;
+            }
+            .review-header {
+              font-weight: bold;
+              margin-bottom: 5px;
+            }
             .button-container {
+              margin-top: 20px;
               display: flex;
               align-items: center;
               gap: 10px;
-              margin-top: 20px;
             }
             .button {
               padding: 10px 20px;
@@ -191,6 +145,34 @@ router.get("/", function (req, res, next) {
             <img src="${productImageURL}" alt="${product.productName}" />
             <p class="price">$${product.productPrice.toFixed(2)}</p>
             <p class="desc">${product.productDesc}</p>
+
+            <div class="review-section">
+              <h2>Review</h2>
+              <a href="/addreview?productId=${
+                product.productId
+              }" >+ Add your review</a>
+              ${
+                reviews.length > 0
+                  ? reviews
+                      .map(
+                        (review) => `
+                        <div class="review">
+                          <div class="review-header">${
+                            review.firstName
+                          } on ${new Date(
+                          review.reviewDate
+                        ).toLocaleDateString()}</div>
+                          <div>[${review.reviewRating}/5] ${
+                          review.reviewComment
+                        }</div>
+                        </div>
+                      `
+                      )
+                      .join("")
+                  : "<p>No reviews yet. Be the first to review this product!</p>"
+              }
+            </div>
+
             <div class="button-container">
               <a href="/listprod" class="button button--outline">Continue shopping</a>
               <a href="/addcart?id=${
