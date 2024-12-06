@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/", function (req, res, next) {
+  const successMessage=req.query.success ? "Registered successfully. Please log in.":null;
   res.setHeader("Content-Type", "text/html");
 
   // Retrieve and reset login message
@@ -70,12 +71,14 @@ router.get("/", function (req, res, next) {
         <body>
             <div class="login-container">
                 <h1>Login</h1>
+                ${successMessage ? `<p class="succesmessage">${successMessage}</p>` : ""}
                 ${loginMessage ? `<p class="message">${loginMessage}</p>` : ""}
                 <form method="POST" action="/validateLogin">
                     <input type="text" name="username" placeholder="Username" required>
                     <input type="password" name="password" placeholder="Password" required>
                     <button type="submit" class="login-button">Login</button>
                 </form>
+                <p class="registermessage"> New to our store? <a href='signuppage'>Sign up now!</a> </p>
             </div>
         </body>
         </html>

@@ -27,7 +27,8 @@ router.get("/", function (req, res, next) {
             `;
 
       const result = await pool.request().query(query);
-
+      const customerQuery=`SELECT firstName, lastName from customer ORDER BY firstName asc`;
+      const custresult=await pool.request().query(customerQuery);
       // Display the report
       res.write(`
                 <html>
@@ -88,6 +89,18 @@ router.get("/", function (req, res, next) {
                     </table>
                     <br>
                     <a href="/">Back to Main Page</a>
+<br>
+<h2>Customer Name's List</h2>
+<table>
+<th> Name </th>
+`);
+custresult.recordset.forEach((row)=>{res.write(`<tr>
+    <td>${row.firstName} ${row.lastName}</td>
+    </tr>`);
+});
+res.write(`
+
+                </table>
                 </body>
                 </html>
             `);
