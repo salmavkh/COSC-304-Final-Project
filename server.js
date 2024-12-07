@@ -19,6 +19,15 @@ let product = require("./routes/product");
 let displayImage = require("./routes/displayImage");
 let customer = require("./routes/customer");
 let ship = require("./routes/ship");
+let signuppage = require("./routes/signuppage");
+let signup = require("./routes/signup");
+let updateProfile = require("./routes/updateProfile");
+let addreview = require("./routes/addreview");
+let addproduct = require("./routes/addproduct");
+let deleteProduct = require("./routes/deleteProduct");
+let updateproduct = require("./routes/updateproduct");
+let recommendMe = require("./routes/recommendMe");
+let aboutUs = require("./routes/aboutUs");
 
 const app = express();
 
@@ -87,6 +96,15 @@ app.use("/product", product);
 app.use("/displayImage", displayImage);
 app.use("/customer", customer);
 app.use("/ship", ship);
+app.use("/signuppage", signuppage);
+app.use("/signup", signup);
+app.use("/updateProfile", updateProfile);
+app.use("/addreview", addreview);
+app.use("/addproduct", addproduct);
+app.use("/deleteProduct", deleteProduct);
+app.use("/updateproduct", updateproduct);
+app.use("/recommendMe", recommendMe);
+app.use("/aboutUs", aboutUs);
 
 // Starting our Express app
 app.listen(3000);
