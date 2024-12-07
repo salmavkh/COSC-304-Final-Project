@@ -27,8 +27,8 @@ router.get("/", function (req, res, next) {
             `;
 
       const result = await pool.request().query(query);
-      const customerQuery=`SELECT firstName, lastName from customer ORDER BY firstName asc`;
-      const custresult=await pool.request().query(customerQuery);
+      const customerQuery = `SELECT firstName, lastName from customer ORDER BY firstName asc`;
+      const custresult = await pool.request().query(customerQuery);
       // Display the report
       res.write(`
                 <html>
@@ -41,7 +41,7 @@ router.get("/", function (req, res, next) {
                             background-color: #f9f9f9;
                         }
                         h1 {
-                            color: #2E7D32;
+                            color: black;
                         }
                         table {
                             width: 100%;
@@ -53,7 +53,7 @@ router.get("/", function (req, res, next) {
                             border: 1px solid #ccc;
                         }
                         th {
-                            background-color: #2E7D32;
+                            background-color: black;
                             color: white;
                         }
                         tr:nth-child(even) {
@@ -61,7 +61,7 @@ router.get("/", function (req, res, next) {
                         }
                         a {
                             text-decoration: none;
-                            color: #2E7D32;
+                            color: black;
                             font-weight: bold;
                         }
                     </style>
@@ -95,17 +95,17 @@ router.get("/", function (req, res, next) {
 <table>
 <th> Name </th>
 `);
-custresult.recordset.forEach((row)=>{res.write(`<tr>
+      custresult.recordset.forEach((row) => {
+        res.write(`<tr>
     <td>${row.firstName} ${row.lastName}</td>
     </tr>`);
-});
+      });
 
-
-res.write(`
+      res.write(`
 
                 </table>
                 `);
-res.write(`<h2>Add product</h3>
+      res.write(`<h2>Add product</h3>
            <form method="POST" action="/addproduct">
            <table>
            <tr><td>Product Name</td><td><input type="text" name="productName" size="20" required></td></tr>
@@ -117,12 +117,12 @@ res.write(`<h2>Add product</h3>
            </form>
 
     `);
-    if(parseInt(req.query.success)===1){
+      if (parseInt(req.query.success) === 1) {
         res.write(`<p>Item successfully added!</p>`);
-    }
+      }
 
-//////// Delete Product
-res.write(`<h2>Delete product</h3>
+      //////// Delete Product
+      res.write(`<h2>Delete product</h3>
     <form method="POST" action="/deleteproduct">
     <table>
     <tr><td>Product ID:</td><td><input type="text" name="productId" size="20" required></td></tr>
@@ -131,14 +131,14 @@ res.write(`<h2>Delete product</h3>
     </form>
 
 `);
-if(parseInt(req.query.success)===2){
- res.write(`<p>Item successfully deleted!</p>`);
-}
+      if (parseInt(req.query.success) === 2) {
+        res.write(`<p>Item successfully deleted!</p>`);
+      }
 
-////////
+      ////////
 
-/////// Update Product
-res.write(`<h2>Update Product</h3>
+      /////// Update Product
+      res.write(`<h2>Update Product</h3>
     <form method="POST" action="/updateproduct">
     <table>
     <tr><td>Product ID </td><td><input type="number" name="productId" size="20" required></td></tr>
@@ -150,14 +150,12 @@ res.write(`<h2>Update Product</h3>
     </form>
 
 `);
-if(parseInt(req.query.success)===3){
- res.write(`<p>Item successfully updated!</p>`);
-}
-///////
+      if (parseInt(req.query.success) === 3) {
+        res.write(`<p>Item successfully updated!</p>`);
+      }
+      ///////
 
-
-
-res.write(`
+      res.write(`
                 </body>
                 </html>
             `);
