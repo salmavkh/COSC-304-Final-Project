@@ -134,6 +134,9 @@ router.get("/", function (req, res, next) {
       if (parseInt(req.query.success) === 2) {
         res.write(`<p>Item successfully deleted!</p>`);
       }
+      if (parseInt(req.query.error) === 1) {
+        res.write(`<p>Failed to delete product! productId does not exist!</p>`);
+      }
 
       ////////
 
@@ -152,6 +155,9 @@ router.get("/", function (req, res, next) {
 `);
       if (parseInt(req.query.success) === 3) {
         res.write(`<p>Item successfully updated!</p>`);
+      }
+      if (parseInt(req.query.error) === 2 ){
+        res.write(`<p>Failed to update product! productId does not exist!</p>`);
       }
       ///////
 

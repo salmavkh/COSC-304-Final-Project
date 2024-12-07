@@ -12,11 +12,25 @@ router.post("/", async function (req, res) {
   
 
     try
-    {await sql.connect(dbConfig);
+    {
+      const pool= await sql.connect(dbConfig);
+      const selectquery = `
+      SELECT * FROM product WHERE productId='${productId}';
+          `;
+      const result = await pool
+      .request()
+      .input("productId", sql.Int, productId)
+      .query(selectquery);
+      
+      if(result.recordset.length==1){
+      await sql.connect(dbConfig);
     const addproductquery=await sql.query`UPDATE product 
     SET productName=${productName}, productDesc=${productDesc}, productPrice=${productPrice}
     WHERE productId=${productId}`;
     res.redirect("/admin?success=3"); // Redirect to the login page
+    }else{
+      res.redirect("/admin?error=2");
+    }
 }catch (err) {
         console.error("Database query error:", err);
         res.write("<p>Error retrieving orders.</p>");
