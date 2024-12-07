@@ -27,6 +27,7 @@ let addproduct = require("./routes/addproduct");
 let deleteProduct = require("./routes/deleteProduct");
 let updateproduct = require("./routes/updateproduct");
 let recommendMe = require("./routes/recommendMe");
+let aboutUs = require("./routes/aboutUs");
 
 const app = express();
 
@@ -103,6 +104,7 @@ app.use("/addproduct", addproduct);
 app.use("/deleteProduct", deleteProduct);
 app.use("/updateproduct", updateproduct);
 app.use("/recommendMe", recommendMe);
+app.use("/aboutUs", aboutUs);
 
 // Starting our Express app
 app.listen(3000);
